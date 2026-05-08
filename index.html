@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lapzeira | Premium Craftsmanship</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['"Space Grotesk"', 'sans-serif'],
+                        'body': ['"Inter"', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        ds: {
+                            light: '#F5F4F3',
+                            white: '#FFFFFF',
+                            black: '#000000',
+                            gray: '#666666',
+                            purple: '#D2C5FF',
+                            green: '#345C59',
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'marquee': 'marquee 20s linear infinite',
+                        'clip-reveal': 'clipReveal 2s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate',
+                        'text-slide': 'textSlide 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        clipReveal: {
+                            '0%': { clipPath: 'inset(100% 0 0 0)' },
+                            '100%': { clipPath: 'inset(0 0 0 0)' },
+                        },
+                        textSlide: {
+                            '0%': { transform: 'translateY(110%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <style>
+        /* Global & Scrollbar */
+        body {
+            background-color: #F5F4F3;
+            color: #000000;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Lenis Smooth Scroll Base */
+        html.lenis, html.lenis body { height: auto; width: 100vw; overflow-x: hidden; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        /* Background Pattern (Light) */
+        .bg-grid-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        /* Transparent Lettering Effects */
+        .text-transparent-stroke {
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.9);
+        }
+        
+        /* Flashlight Effect */
+        .flashlight-card { position: relative; overflow: hidden; }
+        .flashlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.5), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .flashlight-card:hover::before { opacity: 1; }
+
+        /* Glass Cards */
+        .glass-panel-light {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        /* SplitType Pre-animation State */
+        .char, .word, .line {
+            transform: translateY(110%);
+            opacity: 0;
+        }
+
+        /* Noise Overlay for Cinematic Texture */
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        /* Custom selection */
+        ::selection {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="font-body bg-ds-light">
+
+    <!-- Noise overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Minimalist Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 mix-blend-difference text-white transition-opacity duration-300" id="navbar">
+        <div class="flex items-center gap-2 group cursor-pointer">
+            <div class="w-4 h-4 rounded-full border-2 border-white group-hover:bg-white transition-colors duration-300"></div>
+            <span class="font-display text-sm font-bold tracking-widest uppercase">Lapzeira</span>
+        </div>
+        <div class="hidden md:flex gap-8">
+            <a href="#" class="text-xs font-semibold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity">Overview</a>
+            <a href="#" class="text-xs font-semibold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity">Design</a>
+            <a href="#" class="text-xs font-semibold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity">Specs</a>
+        </div>
+        <div>
+            <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+                <iconify-icon icon="solar:hamburger-menu-linear" class="text-xl"></iconify-icon>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Scroll Container (height controls video length/scroll duration) -->
+    <main class="w-full relative h-[500vh]" id="scroll-container">
+        
+        <!-- Sticky Viewport -->
+        <section class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-start bg-ds-light">
+            
+            <!-- Background Video - Fullscreen, positioned behind everything -->
+            <div class="absolute inset-0 w-full h-full z-0 mix-blend-darken" id="video-wrapper">
+                <video 
+                    id="hero-video"
+                    src="raw_files/Video1.mp4" 
+                    class="w-full h-full object-cover object-[center_left]"
+                    style="will-change: transform; transform: translateZ(0);"
+                    muted 
+                    playsinline
+                    preload="auto"
+                ></video>
+            </div>
+            
+            <!-- Content Container -->
+            <div class="container mx-auto px-8 lg:px-16 relative z-10 w-full h-full flex items-center">
+                
+                <!-- Left-aligned Text Content -->
+                <div class="flex flex-col items-start justify-center z-20 w-full lg:w-[60%] mt-24 lg:mt-0" id="text-container">
+                    
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-black/10 bg-white/50 backdrop-blur-md mb-8 w-max opacity-0 transform translate-y-4 shadow-sm" id="badge">
+                        <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+                        <span class="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-black/90">Redefining the standard</span>
+                    </div>
+                    
+                    <h1 class="font-display text-5xl sm:text-6xl lg:text-[85px] font-extrabold leading-[0.9] tracking-tighter mb-8 text-black text-left" id="hero-title" style="-webkit-text-stroke: 1px black;">
+                        <span class="block hover:scale-[1.02] transition-transform duration-500 cursor-default origin-left drop-shadow-sm">BEYOND</span>
+                        <span class="text-transparent-stroke block hover:scale-[1.02] transition-transform duration-500 cursor-default origin-left drop-shadow-sm" style="-webkit-text-stroke: 3px black;">PRECISION.</span>
+                    </h1>
+                    
+                    <div class="mb-10">
+                        <p class="font-body text-base sm:text-lg lg:text-xl text-black/60 max-w-md leading-relaxed font-light drop-shadow-sm text-left" id="hero-desc">
+                            Engineered with aerospace-grade aluminum and a continuously adjusting magnetic mechanism. Lapzeira redefines what a writing instrument can be.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-start gap-4" id="hero-cta">
+                        <!-- Primary Button -->
+                        <button class="group relative flex items-center justify-center overflow-hidden rounded-full font-medium shadow-lg hover:shadow-[0_0_40px_rgba(0,0,0,0.1)] transition-all duration-300">
+                            <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,black_360deg)] opacity-0 group-hover:opacity-100 transition duration-500"></span>
+                            <span class="relative flex h-full w-full items-center justify-center rounded-full bg-black px-10 py-4 ring-1 ring-black/10 m-[1px] transition-transform duration-300 group-hover:scale-[0.98]">
+                                <span class="text-xs tracking-widest uppercase text-white font-bold">Pre-order</span>
+                            </span>
+                        </button>
+
+                        <!-- Secondary Button -->
+                        <button class="group flex items-center justify-center rounded-full px-10 py-4 border border-black/20 bg-white/40 backdrop-blur-md hover:bg-black hover:text-white transition-all duration-300 text-black shadow-sm">
+                            <span class="text-xs tracking-widest uppercase font-bold text-inherit">Watch Film</span>
+                            <iconify-icon icon="solar:play-circle-linear" class="ml-2 text-lg"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center z-20" id="scroll-indicator">
+                <span class="text-[10px] uppercase tracking-[0.2em] font-mono text-black/60 mb-3 font-medium">Scroll</span>
+                <div class="w-[1px] h-12 bg-black/20 overflow-hidden rounded-full">
+                    <div class="w-full h-1/2 bg-black animate-[textSlide_1.5s_infinite] rounded-full"></div>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <!-- GSAP & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Lenis for smooth scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <!-- SplitType for typography animation -->
+    <script src="https://unpkg.com/split-type"></script>
+
+    <script>
+        // 1. Initialize Lenis Smooth Scrolling
+        const lenis = new Lenis({
+            duration: 2.5,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        // Integrate Lenis with GSAP ScrollTrigger
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+        gsap.ticker.lagSmoothing(0, 0);
+
+        // 2. Text Splitting
+        const title = new SplitType('#hero-title', { types: 'chars' });
+        const desc = new SplitType('#hero-desc', { types: 'lines' });
+
+        // 3. Flashlight Effect Logic
+        function handleMouseMove(e, element) {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            element.style.setProperty('--mouse-x', `${x}px`);
+            element.style.setProperty('--mouse-y', `${y}px`);
+        }
+
+        // 4. Main Animations & Scroll Setup
+        window.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('hero-video');
+            video.pause(); // Ensure paused for manual scrubbing
+            let isVideoLoaded = false;
+
+            async function loadVideoAndInit() {
+                try {
+                    // Force the video into RAM completely to avoid decoding stutter
+                    const response = await fetch(video.getAttribute('src'));
+                    const blob = await response.blob();
+                    video.src = URL.createObjectURL(blob);
+                    
+                    if (video.readyState >= 1) {
+                        triggerInit();
+                    } else {
+                        video.addEventListener('loadedmetadata', triggerInit, { once: true });
+                    }
+                } catch (e) {
+                    console.log("Blob fetch failed, using standard src");
+                    triggerInit();
+                }
+            }
+
+            function triggerInit() {
+                if(!isVideoLoaded) {
+                    isVideoLoaded = true;
+                    initAnimations();
+                }
+            }
+
+            loadVideoAndInit();
+
+            function initAnimations() {
+                // Intro Animation Timeline
+                const introTl = gsap.timeline();
+                
+                introTl.to('#badge', {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    delay: 0.2
+                })
+                .to(title.chars, {
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.02,
+                    duration: 1,
+                    ease: 'expo.out'
+                }, "-=0.4")
+                .to(desc.lines, {
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.08,
+                    duration: 0.8,
+                    ease: 'power3.out'
+                }, "-=0.6")
+                .fromTo('#hero-cta', 
+                    { y: 20, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+                    "-=0.6"
+                )
+                .fromTo('#video-wrapper',
+                    { scale: 1.1, opacity: 0 },
+                    { scale: 1, opacity: 1, duration: 2, ease: 'expo.out' },
+                    "-=1.2"
+                )
+                .fromTo('#scroll-indicator',
+                    { opacity: 0 },
+                    { opacity: 1, duration: 1 },
+                    "-=0.5"
+                );
+
+                // Cinematic Scroll Parallax & Video Scrubbing Timeline
+                const scrollContainer = document.getElementById('scroll-container');
+                const videoDuration = video.duration || 5; // fallback to 5s if undefined
+                
+                const scrubTl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: scrollContainer,
+                        start: "top top",
+                        end: "bottom bottom",
+                        scrub: true,
+                    }
+                });
+
+                // THE ULTIMATE FLUID VIDEO SCRUB STACK (LERP + rAF)
+                let targetTime = 0;
+                let currentVideoTime = 0;
+
+                // Animate an invisible progress proxy perfectly tied to scroll
+                scrubTl.to({ progress: 0 }, {
+                    progress: 1,
+                    ease: "none",
+                    onUpdate: function() {
+                        targetTime = this.targets()[0].progress * videoDuration;
+                    }
+                }, 0);
+
+                // Independently process the video decoding perfectly smoothly
+                function renderVideoFrame() {
+                    // 0.08 interpolation creates a buttery smooth cinematic delay
+                    currentVideoTime += (targetTime - currentVideoTime) * 0.08;
+                    
+                    if (video.readyState >= 2) {
+                        // Very fine threshold prevents DOM thrashing
+                        if (Math.abs(video.currentTime - currentVideoTime) > 0.005) {
+                            video.currentTime = currentVideoTime;
+                        }
+                    }
+                    requestAnimationFrame(renderVideoFrame);
+                }
+                requestAnimationFrame(renderVideoFrame);
+
+                // 2. Zoom Video slightly out
+                scrubTl.to('#hero-video', {
+                    scale: 1, // Start at 1.05, scale to 1
+                    ease: "power1.inOut"
+                }, 0);
+
+                // 3. Parallax Text (Moves up faster than video for depth)
+                scrubTl.to('#text-container', {
+                    y: -200,
+                    opacity: 0,
+                    ease: "power2.in"
+                }, 0);
+
+                // 4. Hide Scroll Indicator on scroll
+                scrubTl.to('#scroll-indicator', {
+                    opacity: 0,
+                    y: 20,
+                    ease: "power1.in"
+                }, 0);
+
+                // 5. Hide Navbar on deep scroll
+                scrubTl.to('#navbar', {
+                    y: -100,
+                    opacity: 0,
+                    ease: "power1.in"
+                }, 0.2);
+            }
+        });
+    </script>
+</body>
+</html>

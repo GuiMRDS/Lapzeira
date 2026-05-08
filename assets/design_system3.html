@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=UTF-8>
+<meta name=viewport content=width=device-width, initial-scale=1.0>
+<title>Design System 3 — Space x Motion</title>
+<meta name=description content=Advanced design system combining Space Scroll, Gemini Motion, and Instagram Slides aesthetics.>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href=https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap rel=stylesheet>
+<style>
+@font-face{font-family:'madefor-display-bold';src:url(../Templates/wix.com_studio_design_inspiration_spac/assets/madefor-display-bold_2efb43704c07.woff2) format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'madefor-text';src:url(../Templates/wix.com_studio_design_inspiration_spac/assets/madefor-text_d2c633af5292.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'madefor-text-bold';src:url(../Templates/wix.com_studio_design_inspiration_spac/assets/madefor-text-bold_d7ecf2f8ff3d.woff2) format('woff2');font-weight:700;font-style:normal;font-display:swap}
+:root{
+--color_1:#ffffff;
+--color_11:#F5F4F3;
+--color_15:#000000;
+--color_18:#266aff;
+--color-accent-purple:#D2C5FF;
+--color-accent-teal:#345C59;
+--color-bg-deep:#050505;
+--color-surface:#0A0A0A;
+--color-surface-2:#111111;
+--color-neutral-800:#1a1a1a;
+--color-neutral-700:#262626;
+--color-neutral-600:#404040;
+--color-neutral-500:#737373;
+--color-neutral-400:#a3a3a3;
+--color-neutral-300:#d4d4d4;
+--font_0:normal normal 700 106px/1.1em 'madefor-display-bold',sans-serif;
+--font_2:normal normal 400 54px/0.9em 'madefor-text',sans-serif;
+--font_5:normal normal 400 20px/1.4em 'madefor-text',sans-serif;
+--theme-spx-ratio:1;
+--ease-spring:cubic-bezier(0.16,1,0.3,1);
+--ease-out:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+font-family:'madefor-text','Inter',sans-serif;
+background-color:var(--color_11);
+color:var(--color_15);
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+overflow-x:hidden;
+}
+/* ─── KEYFRAMES ─── */
+@keyframes animationIn{0%{opacity:0;transform:translateY(30px);filter:blur(10px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes shimmer{from{transform:translateX(-100%) skewX(-15deg)}to{transform:translateX(200%) skewX(-15deg)}}
+@keyframes textSlide{0%{transform:translateY(110%);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes clipReveal{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes rotateStar{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(210,197,255,.3),0 0 40px rgba(210,197,255,.1)}50%{box-shadow:0 0 40px rgba(210,197,255,.6),0 0 80px rgba(210,197,255,.3)}}
+@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes beamBorder{0%,100%{opacity:0.5}50%{opacity:1}}
+@keyframes cardStackCycle{0%,25%{transform:translateY(0) scale(1);z-index:30;opacity:1;filter:blur(0)}33%,58%{transform:translateY(-50px) scale(0.87);z-index:10;opacity:0.5;filter:blur(2px)}66%,91%{transform:translateY(-25px) scale(0.93);z-index:20;opacity:0.75;filter:blur(1px)}100%{transform:translateY(0) scale(1);z-index:30;opacity:1;filter:blur(0)}}
+/* ─── ANIMATE ON SCROLL ─── */
+.animate-on-scroll{animation-play-state:paused!important}
+.animate-on-scroll.animate{animation-play-state:running!important}
+.animate-marquee{animation:marquee 40s linear infinite}
+.animate-float{animation:float 6s ease-in-out infinite}
+.animate-rotate-star{animation:rotateStar 8s linear infinite}
+.animate-glow{animation:glowPulse 3s ease-in-out infinite}
+/* ─── NAV ─── */
+.ds-nav{
+position:fixed;top:0;left:0;right:0;height:60px;
+background:rgba(245,244,243,.92);
+backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+z-index:1000;display:flex;align-items:center;
+padding:0 48px;border-bottom:1px solid rgba(0,0,0,.08);
+gap:8px;
+}
+.ds-nav-logo{font-family:'madefor-display-bold',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.02em;margin-right:auto}
+.ds-nav a{text-decoration:none;color:#000;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:6px 12px;border-radius:100px;transition:all .2s ease}
+.ds-nav a:hover{background:#000;color:#fff}
+/* ─── DS SECTION ─── */
+.ds-section{padding:120px 64px;border-bottom:1px solid rgba(0,0,0,.08);position:relative;overflow:hidden}
+.ds-section-title{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.14em;margin-bottom:72px;display:flex;align-items:center;gap:16px}
+.ds-section-title::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.1)}
+.ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:48px}
+/* ─── WIXUI BUTTON CLASSES (original references) ─── */
+.wixui-button{cursor:pointer;border:none;background:transparent;padding:0}
+.StylableButton2545352419__root{transition:all .25s var(--ease-spring);border-radius:100px;display:inline-flex;align-items:center;justify-content:center;padding:14px 36px;text-decoration:none;box-sizing:border-box;cursor:pointer}
+.StylableButton2545352419__label{font-family:'madefor-text',sans-serif;font-size:14px;letter-spacing:.06em;font-weight:600}
+.StylableButton2545352419__icon{width:14px;height:14px;margin-left:10px;fill:currentColor;flex-shrink:0;transition:transform .3s var(--ease-spring)}
+.StylableButton2545352419__root:hover .StylableButton2545352419__icon{transform:rotate(45deg) scale(1.2)}
+.style-luhxljxy7__root{background:#000;border:1.5px solid #000;color:#F5F4F3;position:relative;overflow:hidden}
+.style-luhxljxy7__root::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);transform:translateX(-100%) skewX(-15deg);transition:none}
+.style-luhxljxy7__root:hover{background:#F5F4F3;color:#000;border-color:#000}
+.style-luhxljxy7__root:hover::before{animation:shimmer 1.2s ease}
+.style-luhxbq8e2__root{background:transparent;border:1.5px solid #000;color:#000;position:relative;overflow:hidden}
+.style-luhxbq8e2__root:hover{background:#000;color:#fff}
+/* ─── GLASS PANEL (from gemini animations) ─── */
+.glass-panel{background:rgba(23,23,23,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+/* ─── FLASHLIGHT CARD (from gemini animations) ─── */
+.flashlight-card{background:rgba(255,255,255,.01);position:relative}
+.flashlight-card::before{content:'';position:absolute;inset:0;background:radial-gradient(800px circle at var(--mouse-x,50%) var(--mouse-y,50%),rgba(255,255,255,.08),transparent 40%);opacity:0;transition:opacity .5s;pointer-events:none;z-index:2}
+.flashlight-card:hover::before{opacity:1}
+/* ─── BORDER GRADIENT (from instagram slides) ─── */
+[style*=--border-gradient]::before{content:'';position:absolute;inset:0;padding:1px;border-radius:var(--border-radius-before,inherit);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;background:var(--border-gradient);pointer-events:none}
+</style>
+</head>
+<body>

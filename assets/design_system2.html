@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System 2.0 - Light & Motion</title>
+    
+    <!-- Icons -->
+    <script src="assets/lucide_latest_2eebd0ebe8c2.js"></script>
+    <script src="assets/iconify-icon_e19829e7f0e8.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           1. FONTS & VARIABLES
+           ========================================================================== */
+        @font-face {font-family: 'madefor-display-bold'; src: url("assets/madefor-display-bold_2efb43704c07.woff2") format('woff2'); font-weight: 700; font-style: normal; font-display: swap;}
+        @font-face {font-family: 'madefor-text'; src: url("assets/madefor-text_d2c633af5292.woff2") format('woff2'); font-weight: 400; font-style: normal; font-display: swap;}
+        @font-face {font-family: 'madefor-text-bold'; src: url("assets/madefor-text-bold_d7ecf2f8ff3d.woff2") format('woff2'); font-weight: 700; font-style: normal; font-display: swap;}
+        @font-face {font-family: 'Space Mono'; src: url("https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2") format('woff2'); font-weight: 400; font-style: normal; font-display: swap;}
+        
+        :root {
+            /* Colors */
+            --color-white: #ffffff;
+            --color-black: #000000;
+            --color-bg-light: #F5F4F3;
+            --color-text-main: #1A1A1A;
+            --color-text-muted: #666666;
+            --color-accent-purple: #D2C5FF;
+            --color-accent-green: #345C59;
+            --color-border: rgba(0, 0, 0, 0.1);
+            
+            /* Typography */
+            --font-display: 'madefor-display-bold', system-ui, sans-serif;
+            --font-body: 'madefor-text', system-ui, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            
+            /* Utils */
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ==========================================================================
+           2. BASE STYLES
+           ========================================================================== */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg-light);
+            font-family: var(--font-body);
+            color: var(--color-text-main);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6 { margin: 0; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ==========================================================================
+           3. ANIMATIONS (Core Engine)
+           ========================================================================== */
+        @keyframes animationIn {
+            0% { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes shimmer {
+            from { transform: translateX(-100%) skewX(-15deg); }
+            to { transform: translateX(200%) skewX(-15deg); }
+        }
+
+        @keyframes textSlide {
+            0% { transform: translateY(110%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .animate-on-scroll { animation-play-state: paused !important; opacity: 0; }
+        .animate-on-scroll.animate { animation-play-state: running !important; animation: animationIn 0.8s ease-out forwards; }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+
+        .text-clip-anim span {
+            display: inline-block;
+            animation: textSlide 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        /* ==========================================================================
+           4. LAYOUT & SECTIONS
+           ========================================================================== */
+        .ds-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 70px;
+            background: rgba(245, 244, 243, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            border-bottom: 1px solid var(--color-border);
+            transition: var(--transition-smooth);
+        }
+
+        .ds-nav-logo {
+            font-family: var(--font-display);
+            font-size: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .ds-nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .ds-nav-links a {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-muted);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .ds-nav-links a:hover { color: var(--color-black); }
+        .ds-nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--color-black);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .ds-nav-links a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .ds-section {
+            padding: 120px 5%;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .ds-section-header {
+            margin-bottom: 80px;
+            max-width: 600px;
+        }
+
+        .ds-section-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .ds-section-title {
+            font-family: var(--font-display);
+            font-size: 48px;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .ds-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        /* ==========================================================================
+           5. HERO SECTION (Transparent Lettering & Glow)
+           ========================================================================== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, #ffffff 0%, var(--color-bg-light) 70%);
+            overflow: hidden;
+            padding-top: 70px; /* offset nav */
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(210,197,255,0.4) 0%, rgba(245,244,243,0) 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: pulseGlow 8s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+            100% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
+        }
+
+        /* Wix Style Transparent Lettering */
+        .hero-title-transparent {
+            font-family: var(--font-display);
+            font-size: clamp(80px, 12vw, 180px);
+            line-height: 0.85;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--color-black);
+            position: relative;
+            z-index: 2;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            /* Subtly show background behind text if needed */
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 48px;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Floating Image Inspiration */
+        .hero-img-container {
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+            pointer-events: none;
+        }
+
+        .hero-floating-element {
+            position: absolute;
+            opacity: 0.7;
+            mix-blend-mode: multiply;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* ==========================================================================
+           6. COMPONENTS (Cards, Buttons, Inputs)
+           ========================================================================== */
+        
+        /* Flashlight Card Light Theme */
+        .flashlight-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            transition: transform 0.4s ease;
+        }
+
+        .flashlight-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .flashlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(0, 0, 0, 0.04),
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .flashlight-card:hover::before { opacity: 1; }
+        .flashlight-card > * { position: relative; z-index: 1; }
+
+        /* Beam Button (Light Theme) */
+        .btn-beam {
+            position: relative;
+            display: inline-flex;
+            overflow: hidden;
+            border-radius: 999px;
+            padding: 1px; /* border width */
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-beam:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .btn-beam-spin {
+            position: absolute;
+            inset: -100%;
+            animation: spin 3s linear infinite;
+            background: conic-gradient(from 90deg at 50% 50%, transparent 0%, transparent 75%, var(--color-black) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-beam:hover .btn-beam-spin { opacity: 1; }
+
+        .btn-beam-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.1);
+            transition: opacity 0.3s;
+        }
+
+        .btn-beam:hover .btn-beam-bg { opacity: 0; }
+
+        .btn-beam-content {
+            background: var(--color-white);
+            color: var(--color-black);
+            padding: 16px 36px;
+            border-radius: 999px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+
+        /* Solid Button */
+        .btn-solid {
+            background: var(--color-black);
+            color: var(--color-white);
+            padding: 16px 36px;
+            border-radius: 999px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            transition: var(--transition-smooth);
+            border: 1px solid var(--color-black);
+            cursor: pointer;
+        }
+
+        .btn-solid:hover {
+            background: var(--color-white);
+            color: var(--color-black);
+        }
+
+        /* Input Glow */
+        .input-glow {
+            width: 100%;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: var(--color-text-main);
+            outline: none;
+            transition: var(--transition-smooth);
+            box-shadow: 0 0 0 0 rgba(42, 106, 255, 0);
+        }
+
+        .input-glow:focus {
+            border-color: rgba(42, 106, 255, 0.5);
+            background: #ffffff;
+            box-shadow: 0 0 20px 0 rgba(42, 106, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Tooltip */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: var(--color-black);
+            color: var(--color-white);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--color-black) transparent transparent transparent;
+        }
+
+        .tooltip-wrapper:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(52, 92, 89, 0.1);
+            color: var(--color-accent-green);
+            border: 1px solid rgba(52, 92, 89, 0.2);
+        }
+
+        /* ==========================================================================
+           7. COLOR SWATCHES
+           ========================================================================== */
+        .color-card {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            background: var(--color-white);
+        }
+        
+        .color-preview {
+            height: 120px;
+            width: 100%;
+            position: relative;
+        }
+
+        .color-info {
+            padding: 20px;
+        }
+
+        .color-name { font-weight: 700; display: block; margin-bottom: 8px; font-size: 16px; }
+        .color-hex { color: var(--color-text-muted); font-family: var(--font-mono); font-size: 13px; display: block; margin-bottom: 4px; }
+        .color-role { font-size: 12px; color: var(--color-text-main); opacity: 0.7; }
+
+        /* ==========================================================================
+           8. TYPOGRAPHY SHOWCASE
+           ========================================================================== */
+        .type-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .type-role {
+            flex: 0 0 150px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+        }
+
+        .type-sample { flex: 1; }
+        
+        .type-specs {
+            flex: 0 0 200px;
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+
+        /* Type classes */
+        .text-h1 { font-family: var(--font-display); font-size: 80px; line-height: 1.1; letter-spacing: -0.03em; }
+        .text-h2 { font-family: var(--font-display); font-size: 56px; line-height: 1.1; letter-spacing: -0.02em; }
+        .text-h3 { font-family: var(--font-display); font-size: 40px; line-height: 1.2; letter-spacing: -0.01em; }
+        .text-body-lg { font-family: var(--font-body); font-size: 20px; line-height: 1.6; }
+        .text-body { font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+        .text-caption { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; letter-spacing: 0.05em; text-transform: uppercase; }
+
+        /* ==========================================================================
+           9. INFINITE MARQUEE
+           ========================================================================== */
+        .marquee-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 40px 0;
+            background: var(--color-black);
+            color: var(--color-white);
+            display: flex;
+        }
+        
+        .marquee-content {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee 30s linear infinite;
+            align-items: center;
+            gap: 60px;
+            padding-right: 60px; /* match gap */
+        }
+
+        .marquee-item {
+            font-family: var(--font-display);
+            font-size: 32px;
+            text-transform: uppercase;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            color: transparent;
+            transition: color 0.3s;
+        }
+
+        .marquee-item:hover {
+            color: var(--color-white);
+        }
+
+        /* 3D Cards Grid (From Instagram Slides) */
+        .cards-3d-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            perspective: 1000px;
+        }
+
+        .card-3d {
+            background: var(--color-white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+            border: 1px solid var(--color-border);
+        }
+
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(5deg) translateY(-10px);
+            box-shadow: -10px 20px 40px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="ds-nav">
+        <div class="ds-nav-logo">Vibe<span style="font-family:var(--font-mono); font-size:12px; font-weight:normal; color:var(--color-text-muted); margin-left:8px;">[SYS]</span></div>
+        <div class="ds-nav-links">
+            <a href="#typography">Typography</a>
+            <a href="#colors">Colors</a>
+            <a href="#components">Components</a>
+            <a href="#motion">Motion</a>
+        </div>
+        <div>
+            <a href="#" class="btn-solid" style="padding: 10px 24px; font-size: 12px;">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg-glow"></div>
+        
+        <!-- Optional Floating Images inspired by Wix Template -->
+        <div class="hero-img-container">
+            <img src="assets/cloud_203_e5c027668b4b.webp" alt="Cloud" class="hero-floating-element" style="width: 400px; top: 10%; left: 10%; animation-delay: 0s;">
+            <img src="assets/cloud_203_e5c027668b4b.webp" alt="Cloud" class="hero-floating-element" style="width: 300px; bottom: 20%; right: 5%; animation-delay: -5s; filter: hue-rotate(90deg);">
+        </div>
+
+        <div class="hero-subtitle animate-on-scroll delay-100">Design System V2.0</div>
+        <h1 class="hero-title-transparent animate-on-scroll delay-200">
+            Light <br> & Motion
+        </h1>
+        
+        <div class="animate-on-scroll delay-300" style="margin-top: 40px;">
+            <a href="#components" class="btn-beam">
+                <span class="btn-beam-spin"></span>
+                <span class="btn-beam-bg"></span>
+                <span class="btn-beam-content">
+                    Explore Components
+                    <i data-lucide="arrow-down" style="width: 16px; height: 16px;"></i>
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrapper">
+        <div class="marquee-content">
+            <span class="marquee-item">Typography</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Colors</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Components</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Motion</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Typography</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Colors</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Components</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+            <span class="marquee-item">Motion</span>
+            <iconify-icon icon="solar:star-fall-bold-duotone" width="32" style="color: rgba(255,255,255,0.5);"></iconify-icon>
+        </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <section id="typography" class="ds-section">
+        <div class="ds-section-header animate-on-scroll">
+            <span class="ds-section-label">01 / Foundations</span>
+            <h2 class="ds-section-title">Typography</h2>
+            <p class="text-body-lg" style="margin-top: 20px; color: var(--color-text-muted);">
+                A precise typographic scale based on Madefor Display and Text, engineered for maximum legibility and impact.
+            </p>
+        </div>
+
+        <div class="animate-on-scroll delay-100">
+            <!-- H1 -->
+            <div class="type-row">
+                <div class="type-role">Display H1</div>
+                <div class="type-sample text-h1 text-clip-anim"><span>Space Scroll</span></div>
+                <div class="type-specs">
+                    madefor-display-bold<br>
+                    80px / 1.1em<br>
+                    -3% tracking
+                </div>
+            </div>
+            
+            <!-- H2 -->
+            <div class="type-row">
+                <div class="type-role">Heading H2</div>
+                <div class="type-sample text-h2 text-clip-anim"><span>The Brief</span></div>
+                <div class="type-specs">
+                    madefor-display-bold<br>
+                    56px / 1.1em<br>
+                    -2% tracking
+                </div>
+            </div>
+
+            <!-- H3 -->
+            <div class="type-row">
+                <div class="type-role">Heading H3</div>
+                <div class="type-sample text-h3 text-clip-anim"><span>Planet Details</span></div>
+                <div class="type-specs">
+                    madefor-display-bold<br>
+                    40px / 1.2em<br>
+                    -1% tracking
+                </div>
+            </div>
+
+            <!-- Body Lg -->
+            <div class="type-row">
+                <div class="type-role">Body Large</div>
+                <div class="type-sample text-body-lg">Get ready to embark on a voyage of illusion. Motion principles applied to clean design.</div>
+                <div class="type-specs">
+                    madefor-text<br>
+                    20px / 1.6em<br>
+                    Normal
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="type-row">
+                <div class="type-role">Body Regular</div>
+                <div class="type-sample text-body">The fundamental building blocks of our interface. Clear, legible, and unobtrusive.</div>
+                <div class="type-specs">
+                    madefor-text<br>
+                    16px / 1.6em<br>
+                    Normal
+                </div>
+            </div>
+
+            <!-- Caption -->
+            <div class="type-row">
+                <div class="type-role">Caption / Label</div>
+                <div class="type-sample text-caption">Helper text & metadata</div>
+                <div class="type-specs">
+                    Space Mono<br>
+                    13px / 1.4em<br>
+                    5% tracking, Uppercase
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COLORS -->
+    <section id="colors" class="ds-section">
+        <div class="ds-section-header animate-on-scroll">
+            <span class="ds-section-label">02 / Foundations</span>
+            <h2 class="ds-section-title">Color System</h2>
+            <p class="text-body-lg" style="margin-top: 20px; color: var(--color-text-muted);">
+                A minimalist palette focusing on white space, pure black typography, and subtle gradients for depth.
+            </p>
+        </div>
+
+        <div class="ds-grid animate-on-scroll delay-100">
+            
+            <!-- Primary Background -->
+            <div class="color-card" style="grid-column: span 3;">
+                <div class="color-preview" style="background: #F5F4F3;"></div>
+                <div class="color-info">
+                    <span class="color-name">Background Light</span>
+                    <span class="color-hex">HEX #F5F4F3 | RGB 245, 244, 243</span>
+                    <span class="color-role">Semantic Role: Primary Background</span>
+                    <span class="color-role" style="display:block; margin-top:8px;">Contrast: AAA (vs Black)</span>
+                </div>
+            </div>
+
+            <!-- Primary Text -->
+            <div class="color-card" style="grid-column: span 3;">
+                <div class="color-preview" style="background: #000000;"></div>
+                <div class="color-info">
+                    <span class="color-name">Pure Black</span>
+                    <span class="color-hex">HEX #000000 | RGB 0, 0, 0</span>
+                    <span class="color-role">Semantic Role: Primary Text / Action</span>
+                </div>
+            </div>
+
+            <!-- Accent 1 -->
+            <div class="color-card" style="grid-column: span 3;">
+                <div class="color-preview" style="background: #D2C5FF;"></div>
+                <div class="color-info">
+                    <span class="color-name">Accent Purple</span>
+                    <span class="color-hex">HEX #D2C5FF | RGB 210, 197, 255</span>
+                    <span class="color-role">Semantic Role: Decorative Glow</span>
+                </div>
+            </div>
+
+            <!-- Accent 2 -->
+            <div class="color-card" style="grid-column: span 3;">
+                <div class="color-preview" style="background: #345C59;"></div>
+                <div class="color-info">
+                    <span class="color-name">Accent Green</span>
+                    <span class="color-hex">HEX #345C59 | RGB 52, 92, 89</span>
+                    <span class="color-role">Semantic Role: Feedback / Badge</span>
+                </div>
+            </div>
+
+            <!-- Gradient Participation -->
+            <div class="color-card" style="grid-column: span 12;">
+                <div class="color-preview" style="background: linear-gradient(90deg, #F5F4F3 0%, rgba(210,197,255,0.5) 50%, rgba(52,92,89,0.2) 100%); height: 80px;"></div>
+                <div class="color-info" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+                    <div>
+                        <span class="color-name" style="margin:0;">Gradient Participation</span>
+                        <span class="color-role">Subtle blend for Hero backgrounds and large shapes.</span>
+                    </div>
+                    <span class="color-hex" style="margin:0;">CSS Linear / Radial</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- UI COMPONENTS -->
+    <section id="components" class="ds-section">
+        <div class="ds-section-header animate-on-scroll">
+            <span class="ds-section-label">03 / Interface</span>
+            <h2 class="ds-section-title">UI Components</h2>
+            <p class="text-body-lg" style="margin-top: 20px; color: var(--color-text-muted);">
+                Interactive elements bringing the interface to life. Hover and focus states utilize motion for delight.
+            </p>
+        </div>
+
+        <div class="ds-grid">
+            
+            <!-- BUTTONS -->
+            <div style="grid-column: span 4;" class="animate-on-scroll delay-100">
+                <h3 class="text-h3" style="font-size: 24px; margin-bottom: 24px;">Buttons</h3>
+                
+                <div class="flashlight-card" style="display: flex; flex-direction: column; gap: 24px; align-items: flex-start;">
+                    
+                    <!-- Solid -->
+                    <button class="btn-solid">
+                        Primary Solid
+                        <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    
+                    <!-- Beam -->
+                    <a href="#" class="btn-beam">
+                        <span class="btn-beam-spin"></span>
+                        <span class="btn-beam-bg"></span>
+                        <span class="btn-beam-content">
+                            Gradient Beam
+                            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                        </span>
+                    </a>
+
+                    <!-- Subtle / Transparent -->
+                    <button class="btn-solid" style="background: transparent; color: var(--color-black);">
+                        Secondary Outline
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- INPUTS & TOOLTIPS -->
+            <div style="grid-column: span 4;" class="animate-on-scroll delay-200">
+                <h3 class="text-h3" style="font-size: 24px; margin-bottom: 24px;">Inputs & Feedback</h3>
+                
+                <div class="flashlight-card" style="display: flex; flex-direction: column; gap: 32px; align-items: flex-start;">
+                    
+                    <div style="width: 100%;">
+                        <label class="text-caption" style="margin-bottom: 8px; display: block;">Email Address</label>
+                        <input type="email" class="input-glow" placeholder="Enter your email...">
+                    </div>
+
+                    <div style="display: flex; gap: 16px; align-items: center;">
+                        <span class="badge">
+                            <i data-lucide="check-circle" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+                            Verified
+                        </span>
+                        
+                        <div class="tooltip-wrapper">
+                            <i data-lucide="info" style="width: 20px; height: 20px; color: var(--color-text-muted); cursor: help;"></i>
+                            <div class="tooltip">This is a helpful tooltip message</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- CARDS (3D Rotation) -->
+            <div style="grid-column: span 4;" class="animate-on-scroll delay-300">
+                <h3 class="text-h3" style="font-size: 24px; margin-bottom: 24px;">Cards (3D Hover)</h3>
+                
+                <div style="perspective: 1000px; height: 100%;">
+                    <div class="card-3d" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <iconify-icon icon="solar:box-minimalistic-bold-duotone" width="40" style="color: var(--color-black); margin-bottom: 20px;"></iconify-icon>
+                            <h4 class="text-h3" style="font-size: 20px; margin-bottom: 8px;">Interactive Card</h4>
+                            <p class="text-body" style="color: var(--color-text-muted); font-size: 14px;">Hover to see the 3D rotation effect inspired by Instagram Slides.</p>
+                        </div>
+                        <div style="margin-top: 24px; display: flex; gap: 8px;">
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-border);"></div>
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-black);"></div>
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-border);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ICONS -->
+    <section id="icons" class="ds-section">
+        <div class="ds-section-header animate-on-scroll">
+            <span class="ds-section-label">04 / Assets</span>
+            <h2 class="ds-section-title">Iconography</h2>
+        </div>
+
+        <div class="ds-grid animate-on-scroll delay-100">
+            <div class="flashlight-card" style="grid-column: span 12; display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">
+                
+                <div style="text-align: center; color: var(--color-black);">
+                    <i data-lucide="aperture" style="width: 32px; height: 32px;"></i>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">Aperture</div>
+                </div>
+                <div style="text-align: center; color: var(--color-black);">
+                    <i data-lucide="scissors" style="width: 32px; height: 32px;"></i>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">Scissors</div>
+                </div>
+                <div style="text-align: center; color: var(--color-black);">
+                    <i data-lucide="layers" style="width: 32px; height: 32px;"></i>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">Layers</div>
+                </div>
+                
+                <div style="width: 1px; background: var(--color-border); height: 40px;"></div>
+
+                <div style="text-align: center; color: var(--color-black);">
+                    <iconify-icon icon="solar:stars-minimalistic-bold-duotone" width="32"></iconify-icon>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">Stars</div>
+                </div>
+                <div style="text-align: center; color: var(--color-black);">
+                    <iconify-icon icon="solar:cpu-bold-duotone" width="32"></iconify-icon>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">CPU</div>
+                </div>
+                <div style="text-align: center; color: var(--color-black);">
+                    <iconify-icon icon="solar:database-bold-duotone" width="32"></iconify-icon>
+                    <div class="text-caption" style="margin-top: 12px; font-size: 10px;">Database</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. Flashlight Effect Mouse Tracking
+        document.querySelectorAll('.flashlight-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // 2. Intersection Observer for Scroll Animations
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        // Optional: Unobserve after animation
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // 3. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.ds-nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+                nav.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+            } else {
+                nav.style.background = 'rgba(245, 244, 243, 0.8)';
+                nav.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

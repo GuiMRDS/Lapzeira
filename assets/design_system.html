@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Design System - Light Theme</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['"Space Grotesk"', 'sans-serif'],
+                        'body': ['"Inter"', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        ds: {
+                            light: '#F5F4F3',
+                            white: '#FFFFFF',
+                            black: '#000000',
+                            gray: '#666666',
+                            purple: '#D2C5FF',
+                            green: '#345C59',
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'marquee': 'marquee 20s linear infinite',
+                        'clip-reveal': 'clipReveal 2s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate',
+                        'text-slide': 'textSlide 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        clipReveal: {
+                            '0%': { clipPath: 'inset(100% 0 0 0)' },
+                            '100%': { clipPath: 'inset(0 0 0 0)' },
+                        },
+                        textSlide: {
+                            '0%': { transform: 'translateY(110%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <style>
+        /* Global & Scrollbar */
+        body {
+            background-color: #F5F4F3;
+            color: #000000;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Background Pattern (Light) */
+        .bg-grid-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        /* Transparent Lettering Effects */
+        .text-transparent-stroke {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .text-transparent-bg {
+            background: url('https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/53970266-f8db-425c-8883-5535f3e41c4d_1600w.webp') center/cover;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        /* Scroll Animations */
+        @keyframes animationIn {
+            0% { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+        }
+        .animate-on-scroll { animation-play-state: paused !important; opacity: 0; }
+        .animate-on-scroll.animate { animation-play-state: running !important; animation: animationIn 0.8s ease-out forwards; opacity: 1; }
+
+        .delay-100 { animation-delay: 0.1s !important; }
+        .delay-200 { animation-delay: 0.2s !important; }
+        .delay-300 { animation-delay: 0.3s !important; }
+        .delay-400 { animation-delay: 0.4s !important; }
+        .delay-500 { animation-delay: 0.5s !important; }
+
+        /* Flashlight Effect (Light Theme) */
+        .flashlight-card { position: relative; overflow: hidden; }
+        .flashlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.03), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .flashlight-card:hover::before { opacity: 1; }
+
+        /* Border Gradient for Glass cards */
+        .glass-panel-light {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.02);
+        }
+
+        /* 3D Stack Animation for Cards */
+        @keyframes cardStackCycleLight {
+            0%, 25% { transform: translateY(0) scale(1); z-index: 30; opacity: 1; filter: blur(0px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+            33%, 58% { transform: translateY(-40px) scale(0.9); z-index: 10; opacity: 0.6; filter: blur(2px); box-shadow: 0 10px 20px rgba(0,0,0,0.04); }
+            66%, 91% { transform: translateY(-20px) scale(0.95); z-index: 20; opacity: 0.85; filter: blur(1px); box-shadow: 0 15px 30px rgba(0,0,0,0.06); }
+            100% { transform: translateY(0) scale(1); z-index: 30; opacity: 1; filter: blur(0px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(90deg, #000000 0%, #345C59 50%, #D2C5FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+    </style>
+</head>
+<body class="font-body selection:bg-black selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-lg border-b border-black/5 transition-all duration-300">
+        <div class="flex items-center gap-2">
+            <span class="font-display text-sm font-bold tracking-widest uppercase text-black">Vibe Design</span>
+        </div>
+        <div class="hidden md:flex gap-8">
+            <a href="#hero" class="text-xs font-semibold uppercase tracking-widest text-black/60 hover:text-black transition-colors">Hero</a>
+            <a href="#typography" class="text-xs font-semibold uppercase tracking-widest text-black/60 hover:text-black transition-colors">Typography</a>
+            <a href="#colors" class="text-xs font-semibold uppercase tracking-widest text-black/60 hover:text-black transition-colors">Colors</a>
+            <a href="#components" class="text-xs font-semibold uppercase tracking-widest text-black/60 hover:text-black transition-colors">Components</a>
+            <a href="#icons" class="text-xs font-semibold uppercase tracking-widest text-black/60 hover:text-black transition-colors">Icons</a>
+        </div>
+        <div>
+            <button class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 transition-transform">
+                <iconify-icon icon="solar:menu-dots-bold"></iconify-icon>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Scroll Container -->
+    <main class="w-full relative">
+
+        <!-- 01. Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 bg-grid-pattern opacity-50"></div>
+            <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-ds-purple rounded-full blur-[120px] opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-ds-green rounded-full blur-[100px] opacity-10 animate-pulse" style="animation-delay: 2s;"></div>
+            
+            <div class="container mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+                
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-white/50 backdrop-blur-sm mb-8 animate-on-scroll">
+                    <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+                    <span class="text-xs font-mono font-medium tracking-widest uppercase text-black/70">System V2.0 Ready</span>
+                </div>
+
+                <h1 class="font-display text-7xl md:text-[140px] font-bold leading-[0.85] tracking-tighter mb-6 animate-on-scroll delay-100">
+                    <span class="text-transparent-stroke block hover:scale-105 transition-transform duration-500 cursor-default">DESIGN</span>
+                    <span class="text-black block hover:scale-105 transition-transform duration-500 cursor-default">SYSTEM</span>
+                </h1>
+
+                <p class="font-body text-lg md:text-xl text-black/60 max-w-2xl mx-auto mb-12 animate-on-scroll delay-200">
+                    Combining the pristine elegance of a white theme with breathtaking motion physics, glassmorphism, and structural perfection.
+                </p>
+
+                <!-- Interactive Beam Button -->
+                <button class="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-[1px] font-medium animate-on-scroll delay-300">
+                    <span class="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#F5F4F3_0%,#000000_50%,#F5F4F3_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                    <span class="relative flex h-full w-full items-center justify-center rounded-full bg-black px-10 py-4 text-white transition-all duration-300 group-hover:bg-white group-hover:text-black">
+                        <span class="text-sm tracking-widest uppercase font-bold mr-3">Explore Now</span>
+                        <iconify-icon icon="solar:arrow-right-up-linear" class="text-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></iconify-icon>
+                    </span>
+                </button>
+
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center animate-on-scroll delay-500">
+                <span class="text-[10px] uppercase tracking-[0.2em] font-mono text-black/40 mb-2">Scroll</span>
+                <div class="w-[1px] h-12 bg-black/20 overflow-hidden">
+                    <div class="w-full h-1/2 bg-black animate-[textSlide_1.5s_infinite]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"></div>
+
+        <!-- 02. Typography -->
+        <section id="typography" class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-20 animate-on-scroll">
+                    <div class="mb-6 md:mb-0">
+                        <span class="text-xs uppercase tracking-[0.25em] font-mono text-black/40">01 / System</span>
+                        <h2 class="text-4xl md:text-5xl font-display font-bold tracking-tight mt-4 text-black">Typography</h2>
+                    </div>
+                    <p class="font-mono text-xs text-black/50 max-w-sm border-l-2 border-black/20 pl-4">
+                        "Precision in every letter. Implementing a robust scale combining Space Grotesk for display and Inter for body text."
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Display & Headings -->
+                    <div class="lg:col-span-8 space-y-12">
+                        
+                        <div class="border-b border-black/10 pb-8 animate-on-scroll delay-100 flex flex-col md:flex-row md:items-baseline justify-between group">
+                            <div class="w-32 text-xs font-mono text-black/40 uppercase mb-2 md:mb-0 group-hover:text-black transition-colors">Display 1</div>
+                            <div class="font-display text-6xl md:text-8xl font-bold tracking-tighter text-black flex-1 truncate">Space Grotesk</div>
+                            <div class="w-32 text-right text-[10px] font-mono text-black/40 hidden md:block">140px / 0.85em / -0.05em</div>
+                        </div>
+
+                        <div class="border-b border-black/10 pb-8 animate-on-scroll delay-200 flex flex-col md:flex-row md:items-baseline justify-between group">
+                            <div class="w-32 text-xs font-mono text-black/40 uppercase mb-2 md:mb-0 group-hover:text-black transition-colors">Heading 2</div>
+                            <div class="font-display text-4xl md:text-5xl font-semibold tracking-tight text-black flex-1 truncate">Section Title</div>
+                            <div class="w-32 text-right text-[10px] font-mono text-black/40 hidden md:block">48px / 1.1em / -0.02em</div>
+                        </div>
+
+                        <div class="border-b border-black/10 pb-8 animate-on-scroll delay-300 flex flex-col md:flex-row md:items-baseline justify-between group">
+                            <div class="w-32 text-xs font-mono text-black/40 uppercase mb-2 md:mb-0 group-hover:text-black transition-colors">Heading 3</div>
+                            <div class="font-display text-2xl md:text-3xl font-medium text-black flex-1 truncate">Component Name</div>
+                            <div class="w-32 text-right text-[10px] font-mono text-black/40 hidden md:block">30px / 1.2em / 0em</div>
+                        </div>
+
+                        <div class="border-b border-black/10 pb-8 animate-on-scroll delay-400 flex flex-col md:flex-row md:items-baseline justify-between group">
+                            <div class="w-32 text-xs font-mono text-black/40 uppercase mb-2 md:mb-0 group-hover:text-black transition-colors">Body Large</div>
+                            <div class="font-body text-lg md:text-xl font-normal text-black/70 flex-1">Combining the pristine elegance of a white theme with breathtaking motion physics.</div>
+                            <div class="w-32 text-right text-[10px] font-mono text-black/40 hidden md:block">20px / 1.5em / 0em</div>
+                        </div>
+
+                        <div class="border-b border-black/10 pb-8 animate-on-scroll delay-500 flex flex-col md:flex-row md:items-baseline justify-between group">
+                            <div class="w-32 text-xs font-mono text-black/40 uppercase mb-2 md:mb-0 group-hover:text-black transition-colors">Caption</div>
+                            <div class="font-mono text-xs uppercase tracking-widest text-black/50 flex-1 truncate">System Information Data</div>
+                            <div class="w-32 text-right text-[10px] font-mono text-black/40 hidden md:block">12px / 1.4em / 0.1em</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Visual Demo -->
+                    <div class="lg:col-span-4 animate-on-scroll delay-300">
+                        <div class="glass-panel-light p-8 rounded-2xl h-full flex flex-col justify-center flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <div class="overflow-hidden mb-2">
+                                <h3 class="font-display text-3xl font-bold">Slide Text</h3>
+                            </div>
+                            <div class="w-12 h-1 bg-black mb-6"></div>
+                            <p class="font-body text-sm text-black/60 leading-relaxed">
+                                The text slide animation reveals content from behind a hidden overflow mask, creating a clean, professional entrance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"></div>
+
+        <!-- 03. Colors & Surfaces -->
+        <section id="colors" class="py-32 bg-ds-light relative">
+            <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-20 animate-on-scroll">
+                    <div class="mb-6 md:mb-0">
+                        <span class="text-xs uppercase tracking-[0.25em] font-mono text-black/40">02 / Theme</span>
+                        <h2 class="text-4xl md:text-5xl font-display font-bold tracking-tight mt-4 text-black">Colors &amp; Surfaces</h2>
+                    </div>
+                    <p class="font-mono text-xs text-black/50 max-w-sm border-l-2 border-black/20 pl-4">
+                        "Focused on clarity. Utilizing pristine whites, deep blacks, and subtle glass surfaces for maximum elegance."
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    
+                    <!-- Color Swatch 1 -->
+                    <div class="group animate-on-scroll delay-100">
+                        <div class="w-full aspect-square rounded-2xl bg-[#FFFFFF] border border-black/5 shadow-sm mb-4 transition-transform duration-500 group-hover:-translate-y-2 flex items-center justify-center overflow-hidden relative flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <span class="font-mono text-xs text-black/20 font-bold">#FFFFFF</span>
+                        </div>
+                        <h4 class="font-display font-bold text-sm">Pure White</h4>
+                        <p class="font-mono text-[10px] text-black/50 uppercase mt-1">Primary Surface</p>
+                    </div>
+
+                    <!-- Color Swatch 2 -->
+                    <div class="group animate-on-scroll delay-200">
+                        <div class="w-full aspect-square rounded-2xl bg-[#F5F4F3] border border-black/5 shadow-inner mb-4 transition-transform duration-500 group-hover:-translate-y-2 flex items-center justify-center relative flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <span class="font-mono text-xs text-black/20 font-bold">#F5F4F3</span>
+                        </div>
+                        <h4 class="font-display font-bold text-sm">Off White</h4>
+                        <p class="font-mono text-[10px] text-black/50 uppercase mt-1">Background Layer</p>
+                    </div>
+
+                    <!-- Color Swatch 3 -->
+                    <div class="group animate-on-scroll delay-300">
+                        <div class="w-full aspect-square rounded-2xl bg-[#000000] shadow-lg mb-4 transition-transform duration-500 group-hover:-translate-y-2 flex items-center justify-center relative flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <span class="font-mono text-xs text-white/30 font-bold">#000000</span>
+                        </div>
+                        <h4 class="font-display font-bold text-sm">Solid Black</h4>
+                        <p class="font-mono text-[10px] text-black/50 uppercase mt-1">Primary Text &amp; Action</p>
+                    </div>
+
+                    <!-- Color Swatch 4 -->
+                    <div class="group animate-on-scroll delay-400">
+                        <div class="w-full aspect-square rounded-2xl bg-gradient-to-br from-[#F5F4F3] via-[#D2C5FF] to-[#345C59] shadow-md mb-4 transition-transform duration-500 group-hover:-translate-y-2 flex items-center justify-center relative flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <span class="font-mono text-xs text-white/50 font-bold mix-blend-overlay">Gradient</span>
+                        </div>
+                        <h4 class="font-display font-bold text-sm">Accent Gradient</h4>
+                        <p class="font-mono text-[10px] text-black/50 uppercase mt-1">Decorative Glow</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 04. UI Components -->
+        <section id="components" class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-20 animate-on-scroll">
+                    <span class="text-xs uppercase tracking-[0.25em] font-mono text-black/40">03 / Interface</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold tracking-tight mt-4 text-black">UI Components</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                    
+                    <!-- Left Column: Buttons & Inputs -->
+                    <div class="space-y-16">
+                        
+                        <!-- Buttons -->
+                        <div class="animate-on-scroll delay-100">
+                            <h3 class="font-display text-2xl font-bold mb-6 border-b border-black/10 pb-4">Interactive Buttons</h3>
+                            
+                            <div class="flex flex-wrap gap-6 items-center bg-ds-light p-8 rounded-2xl border border-black/5">
+                                <!-- Primary -->
+                                <button class="group relative flex items-center justify-center overflow-hidden rounded-full font-medium shadow-md">
+                                    <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-0 group-hover:opacity-100 transition duration-500"></span>
+                                    <span class="relative flex h-full w-full items-center justify-center rounded-full bg-black px-8 py-3 ring-1 ring-white/10 m-[1px]">
+                                        <span class="text-xs tracking-widest uppercase text-white font-bold">Primary</span>
+                                    </span>
+                                </button>
+
+                                <!-- Secondary -->
+                                <button class="group flex items-center justify-center rounded-full px-8 py-3 border border-black bg-transparent hover:bg-black hover:text-white transition-all duration-300">
+                                    <span class="text-xs tracking-widest uppercase font-bold text-inherit">Secondary</span>
+                                </button>
+                                
+                                <!-- Icon Button -->
+                                <button class="w-12 h-12 rounded-full border border-black/10 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-sm">
+                                    <iconify-icon icon="solar:download-minimalistic-linear" class="text-xl"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Inputs -->
+                        <div class="animate-on-scroll delay-200">
+                            <h3 class="font-display text-2xl font-bold mb-6 border-b border-black/10 pb-4">Form Elements</h3>
+                            
+                            <div class="bg-ds-light p-8 rounded-2xl border border-black/5 space-y-6">
+                                <div class="relative">
+                                    <label class="font-mono text-[10px] uppercase text-black/50 absolute -top-2 left-3 bg-ds-light px-1">Email Address</label>
+                                    <input type="text" placeholder="hello@vibedesign.com" class="w-full bg-transparent border border-black/20 rounded-lg px-4 py-3 font-body text-sm text-black focus:outline-none focus:border-black transition-colors">
+                                </div>
+                                <div class="relative">
+                                    <label class="font-mono text-[10px] uppercase text-black/50 absolute -top-2 left-3 bg-ds-light px-1">Message</label>
+                                    <textarea rows="3" placeholder="Type here..." class="w-full bg-transparent border border-black/20 rounded-lg px-4 py-3 font-body text-sm text-black focus:outline-none focus:border-black transition-colors resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: 3D Stack Cards -->
+                    <div class="animate-on-scroll delay-300 h-full">
+                        <h3 class="font-display text-2xl font-bold mb-6 border-b border-black/10 pb-4">Glass Cards</h3>
+                        
+                        <div class="bg-ds-light rounded-2xl border border-black/5 h-[500px] flex items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+                            
+                            <div class="relative w-[280px] h-[360px] perspective-1000">
+                                
+                                <!-- Card 3 (Back) -->
+                                <div class="absolute inset-0 rounded-2xl bg-white border border-black/10 p-8 flex flex-col justify-between overflow-hidden group flashlight-card" style="animation: cardStackCycleLight 12s infinite ease-in-out; animation-delay: -8s;" onmousemove="handleMouseMove(event, this)">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-ds-light flex items-center justify-center border border-black/5">
+                                            <iconify-icon icon="solar:layers-bold-duotone" class="text-xl text-black/50"></iconify-icon>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            <span class="w-2 h-2 rounded-full bg-black/20"></span><span class="w-2 h-2 rounded-full bg-black/20"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="w-16 h-2 bg-black/10 rounded mb-3"></div>
+                                        <div class="w-full h-16 bg-black/5 rounded-lg"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2 (Middle) -->
+                                <div class="absolute inset-0 rounded-2xl bg-white border border-black/10 p-8 flex flex-col justify-between overflow-hidden group flashlight-card" style="animation: cardStackCycleLight 12s infinite ease-in-out; animation-delay: -4s;" onmousemove="handleMouseMove(event, this)">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-ds-light flex items-center justify-center border border-black/5">
+                                            <iconify-icon icon="solar:widget-bold-duotone" class="text-xl text-black/50"></iconify-icon>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            <span class="w-2 h-2 rounded-full bg-black/20"></span><span class="w-2 h-2 rounded-full bg-black"></span><span class="w-2 h-2 rounded-full bg-black/20"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="w-16 h-2 bg-black/20 rounded mb-3"></div>
+                                        <div class="w-full h-16 bg-black/10 rounded-lg"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 1 (Front) -->
+                                <div class="absolute inset-0 rounded-2xl bg-white border border-black/10 p-8 flex flex-col justify-between overflow-hidden group flashlight-card" style="animation: cardStackCycleLight 12s infinite ease-in-out; animation-delay: 0s;" onmousemove="handleMouseMove(event, this)">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-10 h-10 rounded-full bg-black flex items-center justify-center shadow-lg">
+                                            <iconify-icon icon="solar:star-fall-minimalistic-bold-duotone" class="text-xl text-white"></iconify-icon>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            <span class="w-2 h-2 rounded-full bg-black"></span><span class="w-2 h-2 rounded-full bg-black/20"></span><span class="w-2 h-2 rounded-full bg-black/20"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-display font-bold text-lg mb-2 text-black">Interactive Stack</h4>
+                                        <p class="font-body text-xs text-black/60">Automated CSS animation cycling through z-indexes and transforms.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"></div>
+
+        <!-- 05. Icons / Infinite Marquee -->
+        <section id="icons" class="py-24 bg-white relative overflow-hidden">
+            <div class="container mx-auto px-6 text-center mb-16 animate-on-scroll">
+                <span class="text-xs uppercase tracking-[0.25em] font-mono text-black/40">04 / Assets</span>
+                <h2 class="text-3xl font-display font-bold tracking-tight mt-2 text-black">Iconography</h2>
+            </div>
+
+            <!-- Fade Masks -->
+            <div class="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+            <div class="flex w-[200%] animate-marquee">
+                <div class="flex justify-around w-1/2 text-black/30 items-center">
+                    <iconify-icon icon="solar:home-smile-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:user-circle-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:settings-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:bell-bing-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:magnifer-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:chat-round-line-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                </div>
+                <div class="flex justify-around w-1/2 text-black/30 items-center">
+                    <iconify-icon icon="solar:home-smile-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:user-circle-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:settings-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:bell-bing-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:magnifer-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                    <iconify-icon icon="solar:chat-round-line-outline" class="text-5xl hover:text-black hover:scale-110 transition-all duration-300"></iconify-icon>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"></div>
+
+        <!-- 06. Motion -->
+        <section id="motion" class="py-32 relative bg-ds-light">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-20 animate-on-scroll">
+                    <div class="mb-6 md:mb-0">
+                        <span class="text-xs uppercase tracking-[0.25em] font-mono text-black/40">05 / Animation</span>
+                        <h2 class="text-4xl md:text-5xl font-display font-bold tracking-tight mt-4 text-black">Motion Details</h2>
+                    </div>
+                    <p class="font-mono text-xs text-black/50 max-w-sm border-l-2 border-black/20 pl-4">
+                        "Motion gives life to the structure. Using clip-paths, alpha masks, and precise easing curves."
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    
+                    <!-- Clip Reveal -->
+                    <div class="bg-white p-8 rounded-2xl border border-black/5 shadow-sm animate-on-scroll delay-100">
+                        <h4 class="font-display font-bold text-xl mb-6 border-b border-black/10 pb-4">Clip Reveal Animation</h4>
+                        
+                        <div class="flex gap-2 h-40 mb-6">
+                            <div class="flex-1 bg-black/10 rounded-sm animate-[clipReveal_1.5s_cubic-bezier(0.77,0,0.175,1)_infinite_alternate]" style="animation-delay: 0s;"></div>
+                            <div class="flex-1 bg-black/20 rounded-sm animate-[clipReveal_1.5s_cubic-bezier(0.77,0,0.175,1)_infinite_alternate]" style="animation-delay: 0.2s;"></div>
+                            <div class="flex-1 bg-black/40 rounded-sm animate-[clipReveal_1.5s_cubic-bezier(0.77,0,0.175,1)_infinite_alternate]" style="animation-delay: 0.4s;"></div>
+                            <div class="flex-1 bg-black/80 rounded-sm animate-[clipReveal_1.5s_cubic-bezier(0.77,0,0.175,1)_infinite_alternate]" style="animation-delay: 0.6s;"></div>
+                        </div>
+
+                        <p class="font-mono text-[10px] text-black/50">Used for image reveals and structural transitions.</p>
+                    </div>
+
+                    <!-- Glowing Hover / Flashlight -->
+                    <div class="bg-white p-8 rounded-2xl border border-black/5 shadow-sm animate-on-scroll delay-200">
+                        <h4 class="font-display font-bold text-xl mb-6 border-b border-black/10 pb-4">Flashlight Interaction</h4>
+                        
+                        <div class="h-40 bg-ds-light rounded-xl flex items-center justify-center mb-6 flashlight-card border border-black/5" onmousemove="handleMouseMove(event, this)">
+                            <div class="glass-panel-light px-6 py-3 rounded-full pointer-events-none">
+                                <span class="font-display font-bold text-sm tracking-widest uppercase">Move Mouse Here</span>
+                            </div>
+                        </div>
+
+                        <p class="font-mono text-[10px] text-black/50">Subtle radial gradient following cursor coordinates.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer CTA -->
+        <footer class="py-24 bg-black text-white text-center">
+            <div class="container mx-auto px-6 animate-on-scroll">
+                <h2 class="font-display text-5xl md:text-7xl font-bold tracking-tighter mb-8">Ready to Build.</h2>
+                <button class="inline-flex items-center justify-center px-10 py-4 bg-white text-black rounded-full font-bold uppercase tracking-widest text-sm hover:bg-ds-light transition-colors hover:scale-105 duration-300">
+                    Get Started
+                </button>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Intersection Observer for Animate-on-Scroll
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("animate");
+                        // Optional: Unobserve if you only want it to animate once
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+                observer.observe(el);
+            });
+        });
+
+        // Flashlight effect mouse tracker
+        function handleMouseMove(e, element) {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            element.style.setProperty('--mouse-x', `${x}px`);
+            element.style.setProperty('--mouse-y', `${y}px`);
+        }
+    </script>
+</body>
+</html>
