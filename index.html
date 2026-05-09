@@ -129,6 +129,25 @@
             background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
         }
 
+        /* Reveal Animations (Artools Style) */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(15px);
+            will-change: transform, opacity, filter;
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+        
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-500 { transition-delay: 500ms; }
+
         /* Custom selection */
         ::selection {
             background-color: #000000;
@@ -140,6 +159,19 @@
 
     <!-- Noise overlay -->
     <div class="noise-overlay"></div>
+
+    <!-- GLOBAL FIXED VIDEO (Plays across entire site) -->
+    <div class="fixed inset-0 w-full h-full z-0 mix-blend-darken pointer-events-none" id="video-wrapper">
+        <video 
+            id="hero-video"
+            src="raw_files/Video1.mp4" 
+            class="w-full h-full object-cover"
+            style="will-change: transform; transform: translateZ(0);"
+            muted 
+            playsinline
+            preload="auto"
+        ></video>
+    </div>
 
     <!-- Minimalist Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 mix-blend-difference text-white transition-opacity duration-300" id="navbar">
@@ -159,24 +191,11 @@
         </div>
     </nav>
 
-    <!-- Scroll Container (height controls video length/scroll duration) -->
-    <main class="w-full relative h-[500vh]" id="scroll-container">
+    <!-- Scroll Container for Hero Text -->
+    <main class="w-full relative h-[250vh]" id="scroll-container">
         
         <!-- Sticky Viewport -->
-        <section class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-start bg-ds-light">
-            
-            <!-- Background Video - Fullscreen, positioned behind everything -->
-            <div class="absolute inset-0 w-full h-full z-0 mix-blend-darken" id="video-wrapper">
-                <video 
-                    id="hero-video"
-                    src="raw_files/Video1.mp4" 
-                    class="w-full h-full object-cover object-[center_left]"
-                    style="will-change: transform; transform: translateZ(0);"
-                    muted 
-                    playsinline
-                    preload="auto"
-                ></video>
-            </div>
+        <section class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-start">
             
             <!-- Content Container -->
             <div class="container mx-auto px-8 lg:px-16 relative z-10 w-full h-full flex items-center">
@@ -189,7 +208,7 @@
                         <span class="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-black/90">Redefining the standard</span>
                     </div>
                     
-                    <h1 class="font-display text-5xl sm:text-6xl lg:text-[85px] font-extrabold leading-[0.9] tracking-tighter mb-8 text-black text-left" id="hero-title" style="-webkit-text-stroke: 1px black;">
+                    <h1 class="font-display text-6xl sm:text-8xl lg:text-[140px] font-extrabold leading-[0.85] tracking-tighter mb-8 text-black text-left" id="hero-title" style="-webkit-text-stroke: 1px black;">
                         <span class="block hover:scale-[1.02] transition-transform duration-500 cursor-default origin-left drop-shadow-sm">BEYOND</span>
                         <span class="text-transparent-stroke block hover:scale-[1.02] transition-transform duration-500 cursor-default origin-left drop-shadow-sm" style="-webkit-text-stroke: 3px black;">PRECISION.</span>
                     </h1>
@@ -227,8 +246,12 @@
                 </div>
             </div>
             
+            <!-- Gradient Fade to Next Section -->
+            <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-ds-light to-transparent pointer-events-none z-10"></div>
         </section>
     </main>
+
+
 
     <!-- Scripts -->
     <!-- GSAP & Plugins -->
@@ -305,56 +328,55 @@
             loadVideoAndInit();
 
             function initAnimations() {
+                // Unified elements list for entry and exit animations
+                const heroElements = [
+                    document.getElementById('badge'),
+                    ...title.chars,
+                    ...desc.lines,
+                    document.getElementById('hero-cta')
+                ];
+
                 // Intro Animation Timeline
                 const introTl = gsap.timeline();
                 
-                introTl.to('#badge', {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: 'power3.out',
-                    delay: 0.2
-                })
-                .to(title.chars, {
-                    y: 0,
-                    opacity: 1,
-                    stagger: 0.02,
-                    duration: 1,
-                    ease: 'expo.out'
-                }, "-=0.4")
-                .to(desc.lines, {
-                    y: 0,
-                    opacity: 1,
-                    stagger: 0.08,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, "-=0.6")
-                .fromTo('#hero-cta', 
-                    { y: 20, opacity: 0 },
-                    { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
-                    "-=0.6"
-                )
-                .fromTo('#video-wrapper',
-                    { scale: 1.1, opacity: 0 },
+                // Video Fade In
+                introTl.fromTo('#video-wrapper',
+                    { scale: 1.05, opacity: 0 },
                     { scale: 1, opacity: 1, duration: 2, ease: 'expo.out' },
-                    "-=1.2"
-                )
-                .fromTo('#scroll-indicator',
+                    0
+                );
+
+                // Entry Animation: Elements stagger in with blur and translation
+                introTl.fromTo(heroElements, 
+                    { y: 40, opacity: 0, filter: "blur(15px)" },
+                    { 
+                        y: 0, 
+                        opacity: 1, 
+                        filter: "blur(0px)", 
+                        stagger: 0.02, 
+                        duration: 1.2, 
+                        ease: 'power3.out' 
+                    }, 
+                    0.2
+                );
+
+                introTl.fromTo('#scroll-indicator',
                     { opacity: 0 },
                     { opacity: 1, duration: 1 },
-                    "-=0.5"
+                    1.0
                 );
 
                 // Cinematic Scroll Parallax & Video Scrubbing Timeline
                 const scrollContainer = document.getElementById('scroll-container');
-                const videoDuration = video.duration || 5; // fallback to 5s if undefined
+                const videoDuration = video.duration || 5; 
                 
+                // VIDEO SCRUB TRIGGERED BY ENTIRE PAGE SCROLL
                 const scrubTl = gsap.timeline({
                     scrollTrigger: {
-                        trigger: scrollContainer,
+                        trigger: document.body,
                         start: "top top",
                         end: "bottom bottom",
-                        scrub: true,
+                        scrub: 0, // Instant response perfectly synced to mouse
                     }
                 });
 
@@ -362,9 +384,10 @@
                 let targetTime = 0;
                 let currentVideoTime = 0;
 
-                // Animate an invisible progress proxy perfectly tied to scroll
+                // 1. Animate an invisible progress proxy perfectly tied to scroll
                 scrubTl.to({ progress: 0 }, {
                     progress: 1,
+                    duration: 1, // Normalized timeline duration
                     ease: "none",
                     onUpdate: function() {
                         targetTime = this.targets()[0].progress * videoDuration;
@@ -373,12 +396,9 @@
 
                 // Independently process the video decoding perfectly smoothly
                 function renderVideoFrame() {
-                    // 0.08 interpolation creates a buttery smooth cinematic delay
-                    currentVideoTime += (targetTime - currentVideoTime) * 0.08;
-                    
+                    currentVideoTime += (targetTime - currentVideoTime) * 0.3;
                     if (video.readyState >= 2) {
-                        // Very fine threshold prevents DOM thrashing
-                        if (Math.abs(video.currentTime - currentVideoTime) > 0.005) {
+                        if (Math.abs(video.currentTime - currentVideoTime) > 0.002) {
                             video.currentTime = currentVideoTime;
                         }
                     }
@@ -386,27 +406,28 @@
                 }
                 requestAnimationFrame(renderVideoFrame);
 
-                // 2. Zoom Video slightly out
-                scrubTl.to('#hero-video', {
-                    scale: 1, // Start at 1.05, scale to 1
-                    ease: "power1.inOut"
-                }, 0);
-
-                // 3. Parallax Text (Moves up faster than video for depth)
-                scrubTl.to('#text-container', {
-                    y: -200,
+                // 2. Parallax Text Exit (Exact reverse of the entry animation, staggered)
+                gsap.to(heroElements, {
+                    y: -40,
                     opacity: 0,
-                    ease: "power2.in"
-                }, 0);
+                    filter: "blur(15px)",
+                    stagger: 0.01,
+                    scrollTrigger: {
+                        trigger: scrollContainer,
+                        start: "top top",
+                        end: "15% top",
+                        scrub: true
+                    }
+                });
 
-                // 4. Hide Scroll Indicator on scroll
+                // 3. Hide Scroll Indicator on scroll
                 scrubTl.to('#scroll-indicator', {
                     opacity: 0,
                     y: 20,
                     ease: "power1.in"
                 }, 0);
 
-                // 5. Hide Navbar on deep scroll
+                // 4. Hide Navbar on deep scroll
                 scrubTl.to('#navbar', {
                     y: -100,
                     opacity: 0,
