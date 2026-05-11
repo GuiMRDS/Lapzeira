@@ -142,6 +142,78 @@
             transform: translateY(0);
             filter: blur(0);
         }
+
+        /* Top Shadow for Section Transition */
+        #specs::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.05), transparent);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 3D Transform & Glow Effects */
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            from { transform: translateX(-100%) skewX(-15deg); }
+            to { transform: translateX(200%) skewX(-15deg); }
+        }
+
+        @keyframes cardStackCycleDark {
+            0%, 25% { transform: translateY(0) scale(1); z-index: 30; opacity: 1; filter: blur(0px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+            33%, 58% { transform: translateY(-40px) scale(0.9); z-index: 10; opacity: 0.3; filter: blur(4px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+            66%, 91% { transform: translateY(-20px) scale(0.95); z-index: 20; opacity: 0.6; filter: blur(2px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+            100% { transform: translateY(0) scale(1); z-index: 30; opacity: 1; filter: blur(0px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        }
+
+        .card-cycle-1 { animation: cardStackCycleDark 12s infinite ease-in-out; animation-delay: 0s; }
+        .card-cycle-2 { animation: cardStackCycleDark 12s infinite ease-in-out; animation-delay: -4s; }
+        .card-cycle-3 { animation: cardStackCycleDark 12s infinite ease-in-out; animation-delay: -8s; }
+
+        .glass-panel-dark {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .beam-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(from 0deg, transparent 0 340deg, white 360deg);
+            animation: spin 3s linear infinite;
+            opacity: 0.15;
+            pointer-events: none;
+            filter: blur(20px);
+        }
+
+        .shimmer-mask {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shimmer-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg);
+            animation: shimmer 3s infinite;
+        }
         
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
@@ -250,6 +322,245 @@
             <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-ds-light to-transparent pointer-events-none z-10"></div>
         </section>
     </main>
+    
+    <!-- Section 2: Engineering & Tech (Redesigned) -->
+    <section id="specs" class="relative z-20 bg-ds-light py-32 px-8 lg:px-20 overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none"></div>
+        
+        <div class="container mx-auto relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 lg:gap-24">
+                
+                <!-- Left Content: Static/Sticky -->
+                <div class="lg:w-[35%] flex flex-col justify-between">
+                    <div class="reveal-up">
+                        <div class="flex gap-4 mb-8 font-mono text-[10px] tracking-[0.4em] text-black/40 uppercase">
+                            <span class="text-black">01</span>
+                            <span>02</span>
+                            <span>03</span>
+                            <span>04</span>
+                        </div>
+                        <h2 class="font-display text-5xl md:text-7xl font-bold tracking-tighter text-black leading-[0.9] mb-8">
+                            Construído para <br>
+                            <span class="text-transparent-stroke" style="-webkit-text-stroke: 1px black;">Legado & Impacto.</span>
+                        </h2>
+                        <p class="font-body text-black/60 text-lg leading-relaxed max-w-sm mb-12">
+                            Dominamos a complexidade da engenharia inglesa para que você possa focar no que importa: sua visão criativa. Sem interrupções, sem falhas.
+                        </p>
+                    </div>
+
+                    <!-- Primary CTA with Beam Effect -->
+                    <div class="reveal-up delay-200">
+                        <button class="group relative flex items-center justify-center overflow-hidden rounded-full font-medium shadow-xl">
+                            <div class="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <div class="beam-effect opacity-40"></div>
+                            </div>
+                            <span class="relative flex h-full w-full items-center justify-center rounded-full bg-black px-10 py-5 m-[1px] transition-transform duration-300 group-hover:scale-[0.98]">
+                                <span class="text-xs tracking-[0.2em] uppercase text-white font-bold flex items-center gap-3">
+                                    Ver Documentação
+                                    <iconify-icon icon="solar:arrow-right-up-linear" class="text-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></iconify-icon>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Content: Cards -->
+                <div class="lg:w-[65%] grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Card 02 -->
+                    <div class="reveal-up delay-300 relative group">
+                        <div class="relative aspect-[3/4] rounded-[40px] overflow-hidden glass-panel-light border border-black/5 p-12 flex flex-col justify-between flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <div class="absolute inset-0 z-0">
+                                <img src="assets/images/feature_metal_body.png" class="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110" alt="Alumínio Aeroespacial">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            </div>
+                            
+                            <div class="relative z-10">
+                                <span class="text-ds-purple font-display font-bold text-lg">Alumínio Aeroespacial</span>
+                                <p class="text-white/40 font-mono text-[10px] uppercase tracking-widest mt-1">Engenharia Inglesa</p>
+                            </div>
+
+                            <div class="relative z-10">
+                                <h3 class="text-white font-display text-3xl font-bold mb-4">Blindagem Tática</h3>
+                                <div class="flex flex-col gap-4">
+                                    <p class="text-white/60 text-sm leading-relaxed max-w-[200px]">Alumínio de grau militar forjado em temperatura controlada para equilíbrio eterno.</p>
+                                    <button class="w-max bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 hover:bg-white hover:text-black transition-all">
+                                        Explorar +
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute bottom-12 right-12 text-8xl font-display font-bold text-white/10 pointer-events-none">02</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 03 -->
+                    <div class="reveal-up delay-500 relative group">
+                        <div class="relative aspect-[3/4] rounded-[40px] overflow-hidden glass-panel-light border border-black/5 p-12 flex flex-col justify-between flashlight-card" onmousemove="handleMouseMove(event, this)">
+                            <div class="absolute inset-0 z-0">
+                                <img src="Templates/wix.com_studio_design_inspiration_spac/assets/Image_20by_20Jake_20Weirick_93bad8a7d4f7.jpg" class="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-110" alt="Grafite de Grafeno">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            </div>
+
+                            <div class="relative z-10">
+                                <span class="text-ds-purple font-display font-bold text-lg">Grafite de Grafeno</span>
+                                <p class="text-white/40 font-mono text-[10px] uppercase tracking-widest mt-1">Sustentabilidade</p>
+                            </div>
+
+                            <div class="relative z-10">
+                                <h3 class="text-white font-display text-3xl font-bold mb-4">Mecanismo Magneto</h3>
+                                <div class="flex flex-col gap-4">
+                                    <p class="text-white/60 text-sm leading-relaxed max-w-[200px]">Tecnologia de traço infinito com troca rápida e impacto ambiental zero.</p>
+                                    <button class="w-max bg-white text-black px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-ds-purple transition-all flex items-center gap-2">
+                                        Ler Mais <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="absolute bottom-12 right-12 text-8xl font-display font-bold text-white/10 pointer-events-none">03</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Experience & Lifestyle (Dark Mode) -->
+    <section id="experience" class="relative z-30 bg-black py-32 px-8 lg:px-20 overflow-hidden min-h-screen flex items-center">
+        <!-- Background Vibe -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-ds-green/20 rounded-full blur-[150px] pointer-events-none animate-pulse"></div>
+        
+        <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+            
+            <div class="reveal-up">
+                <span class="text-[10px] uppercase tracking-[0.4em] font-mono text-white/30 mb-4 block">02 / Experience</span>
+                <h2 class="font-display text-5xl md:text-8xl font-bold tracking-tighter text-white mb-8">O Domínio do Traço</h2>
+                <p class="font-body text-white/40 text-lg font-light leading-relaxed mb-12 max-w-md">
+                    Mais do que uma ferramenta, a Lapzeira é uma extensão da sua mente. Projetada para quem exige fluidez absoluta e controle total sobre cada pixel, cada linha, cada ideia.
+                </p>
+                
+                <div class="flex flex-col gap-6">
+                    <div class="flex items-center gap-6 group">
+                        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                            <iconify-icon icon="solar:pen-bold-duotone" class="text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-display font-bold text-lg">Ergonomia Pura</h4>
+                            <p class="text-white/30 text-sm">Desenhada para longas sessões de criação.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 group">
+                        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                            <iconify-icon icon="solar:magic-stick-bold-duotone" class="text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-display font-bold text-lg">Fluxo Criativo</h4>
+                            <p class="text-white/30 text-sm">Onde a técnica encontra a inspiração.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3D Card Stack -->
+            <div class="relative h-[500px] flex items-center justify-center reveal-up delay-300">
+                <div class="relative w-[320px] h-[420px]">
+                    <!-- Card 3 -->
+                    <div class="absolute inset-0 rounded-3xl overflow-hidden glass-panel-dark p-2 card-cycle-1">
+                        <img src="assets/images/lifestyle_desk.png" class="w-full h-full object-cover rounded-2xl opacity-80" alt="Lifestyle Desk">
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-[10px] font-mono text-white/40 uppercase tracking-widest">Setup Minimalista</span>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="absolute inset-0 rounded-3xl overflow-hidden glass-panel-dark p-2 card-cycle-2">
+                        <img src="assets/images/lifestyle_sketch.png" class="w-full h-full object-cover rounded-2xl opacity-80" alt="Lifestyle Sketch">
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-[10px] font-mono text-white/40 uppercase tracking-widest">Processo Criativo</span>
+                        </div>
+                    </div>
+                    <!-- Card 1 (Front) -->
+                    <div class="absolute inset-0 rounded-3xl overflow-hidden glass-panel-dark p-2 card-cycle-3">
+                        <img src="Templates/wix.com_studio_design_inspiration_spac/assets/Image_20by_20Jake_20Weirick_93bad8a7d4f7.jpg" class="w-full h-full object-cover rounded-2xl opacity-90" alt="Lifestyle Combo">
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-[10px] font-mono text-white/40 uppercase tracking-widest">Ecossistema Lapzeira</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Core Highlight (Video + Glow) -->
+    <section id="highlight" class="relative z-40 bg-black min-h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- Background Video -->
+        <div class="absolute inset-0 w-full h-full">
+            <video src="raw_files/Video1.mp4" class="w-full h-full object-cover opacity-30 grayscale" autoplay muted loop playsinline></video>
+            <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+        </div>
+
+        <div class="container mx-auto px-8 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="reveal-up mb-12">
+                    <span class="text-[10px] uppercase tracking-[0.5em] font-mono text-white/50 mb-6 block">The Masterpiece</span>
+                    <h2 class="font-display text-6xl md:text-[100px] font-extrabold text-white tracking-tighter leading-none mb-12">
+                        A ESSÊNCIA DA <br> <span class="text-transparent-stroke" style="-webkit-text-stroke: 1px white;">PERFEIÇÃO.</span>
+                    </h2>
+                </div>
+
+                <!-- Glow Highlight Box -->
+                <div class="reveal-up delay-300">
+                    <div class="relative group mx-auto max-w-2xl">
+                        <!-- Glow Beam Effect -->
+                        <div class="absolute -inset-1 rounded-3xl overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
+                            <div class="beam-effect"></div>
+                        </div>
+                        
+                        <!-- Main Box -->
+                        <div class="relative glass-panel-dark rounded-3xl p-10 md:p-16 border border-white/10 overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+                            <div class="shimmer-mask"><div class="shimmer-line"></div></div>
+                            
+                            <div class="relative z-10">
+                                <iconify-icon icon="solar:star-fall-bold-duotone" class="text-5xl text-white mb-8 animate-pulse"></iconify-icon>
+                                <h3 class="font-display text-3xl font-bold text-white mb-6">Ajuste Magnético Contínuo</h3>
+                                <p class="font-body text-white/60 text-lg leading-relaxed mb-10">
+                                    Nossa tecnologia proprietária utiliza campos magnéticos para estabilizar o grafite, garantindo que o traço nunca falhe e a pressão seja sempre ideal.
+                                </p>
+                                
+                                <button class="group relative inline-flex items-center justify-center px-10 py-4 bg-white text-black rounded-full font-bold uppercase tracking-widest text-sm overflow-hidden transition-transform hover:scale-105 active:scale-95">
+                                    <span class="relative z-10">Garantir a Minha</span>
+                                    <div class="absolute inset-0 bg-ds-purple opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-20 px-8 text-center relative z-20">
+        <div class="container mx-auto">
+            <h2 class="font-display text-4xl md:text-6xl font-bold text-white mb-12 tracking-tighter">BEYOND PRECISION.</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 border-t border-white/10 pt-12">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full border border-white"></div>
+                    <span class="font-display text-xs font-bold tracking-[0.3em] uppercase text-white">Lapzeira</span>
+                </div>
+                <div class="flex gap-8 text-white/40 text-[10px] font-mono uppercase tracking-widest">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                    <a href="#" class="hover:text-white transition-colors">Support</a>
+                </div>
+                <div class="text-white/20 text-[10px] font-mono uppercase">
+                    &copy; 2026 Lapzeira Craftsmanship.
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
 
@@ -265,7 +576,7 @@
     <script>
         // 1. Initialize Lenis Smooth Scrolling
         const lenis = new Lenis({
-            duration: 2.5,
+            duration: 3.0,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
@@ -283,6 +594,7 @@
 
         // 2. Text Splitting
         const title = new SplitType('#hero-title', { types: 'chars' });
+        const specsTitle = new SplitType('#specs-title', { types: 'chars' });
         const desc = new SplitType('#hero-desc', { types: 'lines' });
 
         // 3. Flashlight Effect Logic
@@ -376,7 +688,7 @@
                         trigger: document.body,
                         start: "top top",
                         end: "bottom bottom",
-                        scrub: 0, // Instant response perfectly synced to mouse
+                        scrub: 0.5, // Added easing to the scroll signal
                     }
                 });
 
@@ -396,7 +708,7 @@
 
                 // Independently process the video decoding perfectly smoothly
                 function renderVideoFrame() {
-                    currentVideoTime += (targetTime - currentVideoTime) * 0.3;
+                    currentVideoTime += (targetTime - currentVideoTime) * 0.1; // Reduced from 0.3 for more "elastic" fluidity
                     if (video.readyState >= 2) {
                         if (Math.abs(video.currentTime - currentVideoTime) > 0.002) {
                             video.currentTime = currentVideoTime;
@@ -433,6 +745,62 @@
                     opacity: 0,
                     ease: "power1.in"
                 }, 0.2);
+
+                // 5. Refined Transition: Blur and Scale video out
+                gsap.to('#hero-video', {
+                    opacity: 0,
+                    filter: "blur(20px)",
+                    scale: 0.9,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: '#specs',
+                        start: "top 90%",
+                        end: "top 30%",
+                        scrub: true
+                    }
+                });
+
+                // 6. Reveal-up animations for #specs section
+                const revealElements = document.querySelectorAll('.reveal-up');
+                revealElements.forEach((el) => {
+                    ScrollTrigger.create({
+                        trigger: el,
+                        start: "top 85%",
+                        onEnter: () => el.classList.add('active')
+                    });
+                });
+
+                // Staggered reveal for Specs Title
+                gsap.fromTo(specsTitle.chars, 
+                    { y: 30, opacity: 0, filter: "blur(10px)" },
+                    { 
+                        y: 0, 
+                        opacity: 1, 
+                        filter: "blur(0px)", 
+                        stagger: 0.02, 
+                        duration: 1, 
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: '#specs-title',
+                            start: "top 80%",
+                        }
+                    }
+                );
+
+                // 7. Inner Image Parallax
+                document.querySelectorAll('.parallax-img').forEach((img) => {
+                    const speed = img.getAttribute('data-speed');
+                    gsap.to(img, {
+                        y: (i, target) => -100 * speed,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: img,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    });
+                });
             }
         });
     </script>
